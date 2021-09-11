@@ -17,7 +17,6 @@ jobs:
       - name: Bump version
         id: bump_version
         run: |
-          npm run release
           echo ::set-output name=VERSION::$(echo 1.1.1)
       - uses: actions/github-script@v4
         env:
