@@ -17,7 +17,7 @@ jobs:
       - uses: actions/github-script@v4
         env:
           BRANCH: ${{ steps.get_branch.outputs.BRANCH }}
-          VERSION: ${{ steps.bump_version.outputs.VERSION }}
+          # VERSION: ${{ steps.bump_version.outputs.VERSION }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           # github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -27,6 +27,6 @@ jobs:
               repo: context.repo.repo,
               title: `chore(*): bump v${process.env.VERSION}`,
               body: `Bump v${process.env.VERSION}`,
-              head: `${context.repo.owner}:bump-v${process.env.VERSION}`,
+              head: `${context.repo.owner}`,
               base: process.env.BRANCH
             })
