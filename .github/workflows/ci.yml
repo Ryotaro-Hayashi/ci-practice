@@ -31,6 +31,8 @@ jobs:
           git branch -m ${VERSION}
           touch test.txt
           git add -A
+          git status
+          git branch
           git push -u origin ${VERSION}
       - uses: actions/github-script@v4
         env:
