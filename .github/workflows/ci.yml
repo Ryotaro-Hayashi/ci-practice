@@ -33,6 +33,7 @@ jobs:
           git add -A
           git status
           git branch
+          git commit -m "this is PR test commit"
           git push -u origin ${VERSION}
       - uses: actions/github-script@v4
         env:
