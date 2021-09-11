@@ -24,14 +24,12 @@ jobs:
         id: bump_version
         run: |
           echo ::set-output name=VERSION::$(echo 1.1.1)
-      - name: Install dependencies
-        run: |
-          touch test.txt
       - name: Push branch
         env:
           VERSION: ${{ steps.bump_version.outputs.VERSION }}
         run: |
           git branch -m ${VERSION}
+          touch test.txt
           git add -A
           git push -u origin ${VERSION}
       - uses: actions/github-script@v4
