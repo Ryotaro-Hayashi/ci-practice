@@ -32,6 +32,7 @@ jobs:
           VERSION: ${{ steps.bump_version.outputs.VERSION }}
         run: |
           git branch -m ${VERSION}
+          git add -A
           git push -u origin ${VERSION}
       - uses: actions/github-script@v4
         env:
