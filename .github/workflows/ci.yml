@@ -28,8 +28,8 @@ jobs:
         env:
           VERSION: ${{ steps.bump_version.outputs.VERSION }}
         run: |
-          git branch -m bump-v${VERSION}
-          git push -u origin bump-v${VERSION}
+          git branch -m ${VERSION}
+          git push -u origin ${VERSION}
       - uses: actions/github-script@v4
         env:
           BRANCH: ${{ steps.get_branch.outputs.BRANCH }}
@@ -43,6 +43,6 @@ jobs:
               repo: context.repo.repo,
               title: `chore(*): bump v${process.env.VERSION}`,
               body: `Bump v${process.env.VERSION}`,
-              head: `${context.repo.owner}:bump-v${process.env.VERSION}`,
+              head: `${context.repo.owner}:${process.env.VERSION}`,
               base: process.env.BRANCH
             })
