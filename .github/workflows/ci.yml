@@ -14,19 +14,24 @@ jobs:
       - name: Get branch
         id: get_branch
         run: echo ::set-output name=BRANCH::${GITHUB_REF/refs\/heads\//}
+      - name: Bump version
+        id: bump_version
+        run: |
+          npm run release
+          echo ::set-output name=VERSION::$(echo 1.1.1)
       - uses: actions/github-script@v4
         env:
           BRANCH: ${{ steps.get_branch.outputs.BRANCH }}
-          # VERSION: ${{ steps.bump_version.outputs.VERSION }}
+          VERSION: ${{ steps.bump_version.outputs.VERSION }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          # github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          # github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           script: |
             github.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `chore(*): bump v${process.env.VERSION}`,
               body: `Bump v${process.env.VERSION}`,
-              head: `${context.repo.owner}`,
+              head: `${context.repo.owner}:bump-v${process.env.VERSION}`,
               base: process.env.BRANCH
             })
