@@ -31,6 +31,6 @@ jobs:
               repo: context.repo.repo,
               title: `chore(*): bump v${process.env.VERSION}`,
               body: `Bump v${process.env.VERSION}`,
-              head: `${context.repo.owner}:bump-v${process.env.VERSION}`,
+              head: `${context.repo.owner}:main`,
               base: process.env.BRANCH
             })
