@@ -32,7 +32,7 @@ jobs:
         env:
           BRANCH: ${{ steps.get_branch.outputs.BRANCH }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # github-token: ${{ secrets.GITHUB_TOKEN }}
           # github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           script: |
             github.pulls.create({
