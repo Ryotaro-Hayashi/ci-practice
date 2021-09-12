@@ -23,6 +23,9 @@ jobs:
       - name: Push branch
         run: |
           git branch -m feature
+          touch test.txt
+          git add -A
+          git commit -m "test commit"
           git push -u origin feature
       - name: Create pull request
         uses: actions/github-script@v4
