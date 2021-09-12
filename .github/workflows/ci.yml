@@ -20,7 +20,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
       - name: Push branch
         run: |
-          git switch -c feature origin/feature
+          git switch -c feature
           echo "test:" >> test.txt
           git add -A
           git commit -m "test commit"
@@ -41,3 +41,6 @@ jobs:
               head: `${context.repo.owner}:feature`,
               base: process.env.BRANCH
             })
+      - name: Delete branch
+        run: |
+          git push --delete origin feature
