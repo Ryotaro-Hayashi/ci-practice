@@ -7,37 +7,51 @@ on:
 jobs:
   ci:
     runs-on: ubuntu-latest
+    env:
+      ANOTHER_REPOSITORY: hws-api
+      BRANCH: feature-test
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0
-      - name: Get branch
-        id: get_branch
-        run: echo ::set-output name=BRANCH::${GITHUB_REF/refs\/heads\//}
+          path: ci-practice
+      - name: Checkout Another Repository
+        uses: actions/checkout@v2
+        with:
+          repository: Ryotaro-Hayashi/hws-api
+          path: ${{ env.ANOTHER_REPOSITORY }}
+      - name: Get base branch
+        id: get_base_branch
+        run: echo ::set-output name=BASE_BRANCH::${GITHUB_REF#refs/heads/}
       - name: Git config
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
+          mkdir ~/.ssh
+          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+          echo "${{ secrets.CI_TOKEN }}" > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
       - name: Push branch
         run: |
-          git switch -c feature
+          cd ${{ env.ANOTHER_REPOSITORY }}
+          git remote set-url origin git@github.com:Ryotaro-Hayashi/hws-api.git
+          git switch -c ${{ env.BRANCH }}
           echo "test:" >> test.txt
           git add -A
           git commit -m "test commit"
-          git push -u origin feature
+          git push -u origin ${{ env.BRANCH }}
       - name: Create pull request
         uses: actions/github-script@v4
         env:
-          BRANCH: ${{ steps.get_branch.outputs.BRANCH }}
+          BASE_BRANCH: ${{ steps.get_base_branch.outputs.BASE_BRANCH }}
         with:
-          # github-token: ${{ secrets.GITHUB_TOKEN }}
-          # github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          # github-token: ${{ secrets.CI_TOKEN }} // ←Deploy KeyではダメでPATならいける
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           script: |
             github.pulls.create({
               owner: context.repo.owner,
-              repo: context.repo.repo,
-              title: `chore`,
-              body: `maybe created`,
-              head: `${context.repo.owner}:feature`,
-              base: process.env.BRANCH
+              repo: `${{ env.ANOTHER_REPOSITORY }}`,
+              title: `test PR title`,
+              body: `test PR body`,
+              head: `${context.repo.owner}:${{ env.BRANCH }}`,
+              base: process.env.BASE_BRANCH
             })
